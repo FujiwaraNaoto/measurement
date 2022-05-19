@@ -63,10 +63,11 @@ def drawFig(x_value,y_value,title_name='',label_x='x',label_y='y',file_name='tmp
     plt.rcParams['font.size'] = font_size
     #plt.subplot(121)
     if(title_name==''):
-        plt.plot(x_value, y_value)
+        pass
     else:
-        plt.plot(x_value, y_value, label=title_name)
-        
+        plt.title(label=title_name,loc='center')
+    
+    plt.plot(x_value, y_value)
     plt.xlabel(label_x, fontsize=15)
     plt.ylabel(label_y, fontsize=15)
     plt.grid()
@@ -243,8 +244,6 @@ class TideAnalysis:
         return tidal_acf_x,tidal_acf_y
         
         
-  
-
 if __name__=='__main__':
     
     dt=3600
@@ -254,12 +253,12 @@ if __name__=='__main__':
     freq1,Amp1,Pow1 = tide1.FFT()
     
     
-    fig1_1 = drawFig(freq1,Amp1,label_x='f[Hz]',label_y='Amplitude',file_name="FFT.png",is_show=True)
-    fig1_2 = drawFig(freq1,Pow1,label_x='f[Hz]',label_y='pow',file_name="POW.png",is_show=True)
+    fig1_1 = drawFig(freq1,Amp1,title_name='MT202203 Amplitude',label_x='f[Hz]',label_y='Amplitude',file_name="FFT.png",is_show=True)
+    fig1_2 = drawFig(freq1,Pow1,title_name='MT202203 Power',label_x='f[Hz]',label_y='Power',file_name="POW.png",is_show=True)
     
     #自己相関
     tidal_acf_x1,tidal_acf_y1 = tide1.ACF(lags=40) 
-    fig1_3 = drawFig(tidal_acf_x1,tidal_acf_y1,label_x='time[s]',label_y='Amplitude',file_name="FFT.png",is_show=True)
+    fig1_3 = drawFig(tidal_acf_x1/3600,tidal_acf_y1,title_name='MT202203 ACF',label_x='time[hour]',label_y='r',file_name="rx.png",is_show=True)
     
     
     
@@ -271,30 +270,30 @@ if __name__=='__main__':
     freq2,Amp2,Pow2 = tide2.FFT()
     
     
-    #fig2_1 = drawFig(freq,Amp,label_x='f[Hz]',label_y='Amplitude',file_name="FFT.png",is_show=True)
-    #fig2_2 = drawFig(freq,Pow,label_x='f[Hz]',label_y='pow',file_name="POW.png",is_show=True)
+    fig2_1 = drawFig(freq2,Amp2,title_name='KC202203 Amplitude',label_x='f[Hz]',label_y='Amplitude',file_name="FFT.png",is_show=True)
+    fig2_2 = drawFig(freq2,Pow2,title_name='KC202203 Power',label_x='f[Hz]',label_y='pow',file_name="POW.png",is_show=True)
     
     #自己相関
     tidal_acf_x2,tidal_acf_y2 = tide2.ACF(lags=40) 
-    fig2_3 = drawFig(tidal_acf_x2/3600,tidal_acf_y2,label_x='time[hour]',label_y='Amplitude',file_name="FFT.png",is_show=True,axis_option=False)
+    fig2_3 = drawFig(tidal_acf_x2/3600,tidal_acf_y2,title_name='AC202203 ACF',label_x='time[hour]',label_y='r',file_name="ry.png",is_show=True,axis_option=False)
     
     
     # https://morioh.com/p/9bf6d605cec4
     #相互相関
     
-    Rx0 = np.std(tide1.corrected_tidal_data_np)
+    Rx0 = np.std(tide1.corrected_tidal_data_np)#標準偏差
     Ry0 = np.std(tide2.corrected_tidal_data_np)
     
     #mode=valid or full
     corr = np.correlate(tide1.corrected_tidal_data_np/Rx0, tide2.corrected_tidal_data_np/Ry0,mode="full")
-    #corr = np.correlate(tide1.corrected_tidal_data_np, tide2.corrected_tidal_data_np,mode="full")
     
     #入力ベクトルの大きさで規格化 https://blog.colorfulwires.jp/entry/normalized_cross_correlation
+    # tide1.corrected_tidal_data_np.shape[0]= tide2.corrected_tidal_data_np.shape[0]
     corr_y = corr[0:300]/tide1.corrected_tidal_data_np.shape[0]
     
     time = np.arange(0,corr_y.shape[0]*dt,dt)/3600#hourにする
     
-    fig = drawFig(time,corr_y,label_x='time[hour]',label_y='correlation',file_name="FFT.png",is_show=True)
+    fig = drawFig(time,corr_y,title_name='MT and KC CCF',label_x='time[hour]',label_y='correlation',file_name="FFT.png",is_show=True)
     
     
     
