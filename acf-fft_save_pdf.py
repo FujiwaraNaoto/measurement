@@ -3,6 +3,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May 19 01:11:36 2022
+一応完成
 
 @author: titan
 https://www.data.jma.go.jp/kaiyou/data/db/tide/genbo/2022/202202/hry202202TK.txt
@@ -58,7 +59,6 @@ def FFT(array):
 def drawFig(x_value,y_value,title_name='',label_x='x',label_y='y',file_name='tmp.pdf',font_family='Times New Roman',font_size = 17,is_show=False,axis_option=True):
     '''グラフをかくためだけの関数'''
     fig = plt.figure()
-    plt.figure()
     plt.rcParams['font.family'] = font_family
     plt.rcParams['font.size'] = font_size
     #plt.subplot(121)
@@ -95,12 +95,9 @@ def drawFig(x_value,y_value,title_name='',label_x='x',label_y='y',file_name='tmp
     if(is_show):
         plt.show()
     plt.savefig(file_name)
+    
     return fig
 
-
-
-#open_file_name = "testmemo.txt"
-#open_file_name = "hry202202TK.txt"
 
 class TideAnalysis:
     
@@ -109,17 +106,14 @@ class TideAnalysis:
     def __init__(self,open_file_name,dt):
         '''データを読み込むためのもの'''
         
-        #self.corrected_tidal_data_np=np.array([])
         self.file_name=open_file_name
         self.raw_tidal_data=[]#潮のデータを格納
         self.raw_tidal_data_np=np.array([])#numpyがたの配列
         
         
         self.max_tidal_data=[]#満潮の時
-        #np.empty(max_tidal_data, dtype=float)
         self.min_tidal_data=[]#干潮の時
-        #np.empty(min_tidal_data, dtype=float)
-        #self.sample_num
+        
         self.dt = dt
         
         
@@ -166,7 +160,7 @@ class TideAnalysis:
                     i+=2
                     height = float(line[i:i+3])
                     i+=3
-                    #print("hour=",hour,"minute=",minute,"height=",height)
+                    
                     if(hour==99 and minute==99 and height==999.0):
                         #print("*")
                         pass
@@ -248,6 +242,7 @@ class TideAnalysis:
         #print("tidal_acf_x =",tidal_acf_x,"tidal_acf_y =",tidal_acf_y )
         return tidal_acf_x,tidal_acf_y
         
+        
   
 
 if __name__=='__main__':
@@ -264,7 +259,7 @@ if __name__=='__main__':
     
     #自己相関
     tidal_acf_x1,tidal_acf_y1 = tide1.ACF(lags=40) 
-    #fig1_3 = drawFig(tidal_acf_x1,tidal_acf_y1,label_x='time[s]',label_y='Amplitude',file_name="FFT.png",is_show=True)
+    fig1_3 = drawFig(tidal_acf_x1,tidal_acf_y1,label_x='time[s]',label_y='Amplitude',file_name="FFT.png",is_show=True)
     
     
     
@@ -302,6 +297,13 @@ if __name__=='__main__':
     fig = drawFig(time,corr_y,label_x='time[hour]',label_y='correlation',file_name="FFT.png",is_show=True)
     
     
+    
+    pp = PdfPages('Save_answer_PDF.pdf')
+    pp.savefig(fig1_1)
+    pp.savefig(fig1_2)
+    pp.savefig(fig1_3)
+    pp.savefig(fig)
+    pp.close()
     
     
     
