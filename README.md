@@ -4,6 +4,11 @@ You may obtain tidal observational data from Japan Meteorological Agency.Vsit ht
 
 You may command 
 ```
+pip install package
+```
+for example, package = matplotlib,then
+
+```
 pip install matplotlib
 ```
 
