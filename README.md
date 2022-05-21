@@ -1,3 +1,10 @@
 # Advanced course of Measurement and Signal Processing
-you may download the file
-http://www.data.jma.go.jp/kaiyou/db/tide/genbo/index.php
+
+You may obtain tidal observational data from Japan Meteorological Agency.Vsit http://www.data.jma.go.jp/kaiyou/db/tide/genbo/index.php
+
+You may command 
+```
+pip install matplotlib
+```
+
+
